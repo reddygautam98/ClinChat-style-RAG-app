@@ -1,0 +1,12 @@
+fastapi
+uvicorn[standard]
+langchain
+google-generativeai
+groq
+langchain-google-genai
+langchain-groq
+faiss-cpu
+pymupdf
+pandas
+python-dotenv
+boto3

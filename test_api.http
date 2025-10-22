@@ -1,0 +1,68 @@
+### Fusion AI Chat Endpoints
+
+# Test fusion AI chat (Advanced)
+POST http://localhost:8000/api/v1/chat/fusion
+Content-Type: application/json
+
+{
+  "message": "What are the symptoms of diabetes?",
+  "use_rag": true,
+  "fusion_strategy": "weighted_average",
+  "context": "Medical consultation for diabetes symptoms",
+  "require_consensus": false,
+  "min_confidence": 0.5
+}
+
+###
+
+# Test basic chat (Legacy support with automatic fusion)
+POST http://localhost:8000/api/v1/chat/
+Content-Type: application/json
+
+{
+  "message": "What are the symptoms of diabetes?",
+  "use_rag": true
+}
+
+###
+
+# Check fusion AI health
+GET http://localhost:8000/api/v1/chat/fusion/health
+
+###
+
+# List available AI models
+GET http://localhost:8000/api/v1/chat/fusion/models
+
+###
+
+# Get conversation history
+GET http://localhost:8000/api/v1/chat/conversations/default
+
+###
+
+# Document upload
+POST http://localhost:8000/api/v1/documents/upload
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="medical_doc.pdf"
+Content-Type: application/pdf
+
+< ./path/to/your/medical_document.pdf
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+###
+
+# List documents
+GET http://localhost:8000/api/v1/documents/
+
+###
+
+# Health check
+GET http://localhost:8000/health
+
+###
+
+# Root endpoint
+GET http://localhost:8000/
