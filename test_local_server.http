@@ -1,0 +1,26 @@
+### Test ClinChat RAG API
+
+# Test health endpoint
+GET http://127.0.0.1:8000/health
+
+###
+
+# Test root endpoint
+GET http://127.0.0.1:8000/
+
+###
+
+# Test query endpoint
+POST http://127.0.0.1:8000/query
+Content-Type: application/json
+
+{
+  "question": "What is trial X?",
+  "use_fusion": true,
+  "model_preference": "auto"
+}
+
+###
+
+# Test interactive docs
+GET http://127.0.0.1:8000/docs

@@ -1,6 +1,7 @@
 fastapi
 uvicorn[standard]
 langchain
+langchain-community
 google-generativeai
 groq
 langchain-google-genai
@@ -10,3 +11,5 @@ pymupdf
 pandas
 python-dotenv
 boto3
+sentence-transformers
+tiktoken

@@ -44,7 +44,7 @@ class FusionAIService:
         try:
             if settings.GOOGLE_GEMINI_API_KEY:
                 genai.configure(api_key=settings.GOOGLE_GEMINI_API_KEY)
-                self.gemini_client = genai.GenerativeModel('gemini-pro')
+                self.gemini_client = genai.GenerativeModel('gemini-2.5-flash')
                 logger.info("Gemini client initialized successfully")
             
             if settings.GROQ_API_KEY:
@@ -71,7 +71,7 @@ class FusionAIService:
             return ModelResponse(
                 content=response.text,
                 confidence=confidence,
-                model_name="gemini-pro",
+                model_name="gemini-2.5-flash",
                 processing_time=processing_time,
                 token_count=len(response.text.split())
             )
@@ -81,7 +81,7 @@ class FusionAIService:
             return ModelResponse(
                 content=f"Gemini error: {str(e)}",
                 confidence=0.0,
-                model_name="gemini-pro",
+                model_name="gemini-2.5-flash",
                 processing_time=time.time() - start_time
             )
     
@@ -97,7 +97,7 @@ class FusionAIService:
             messages.append({"role": "user", "content": prompt})
             
             response = self.groq_client.chat.completions.create(
-                model="mixtral-8x7b-32768",  # or "llama2-70b-4096"
+                model="llama-3.3-70b-versatile",  # Updated to current available model
                 messages=messages,
                 temperature=settings.TEMPERATURE,
                 max_tokens=settings.MAX_TOKENS
@@ -112,7 +112,7 @@ class FusionAIService:
             return ModelResponse(
                 content=content,
                 confidence=confidence,
-                model_name="mixtral-8x7b-32768",
+                model_name="llama-3.3-70b-versatile",
                 processing_time=processing_time,
                 token_count=response.usage.total_tokens if response.usage else len(content.split())
             )
@@ -122,7 +122,7 @@ class FusionAIService:
             return ModelResponse(
                 content=f"Groq error: {str(e)}",
                 confidence=0.0,
-                model_name="mixtral-8x7b-32768",
+                model_name="llama-3.3-70b-versatile",
                 processing_time=time.time() - start_time
             )
     
@@ -197,7 +197,7 @@ class FusionAIService:
         for response in responses:
             if "gemini" in response.model_name.lower():
                 weights.append(settings.GEMINI_WEIGHT * response.confidence)
-            elif "mixtral" in response.model_name.lower() or "groq" in response.model_name.lower():
+            elif "llama" in response.model_name.lower() or "groq" in response.model_name.lower():
                 weights.append(settings.GROQ_WEIGHT * response.confidence)
             else:
                 weights.append(0.5 * response.confidence)  # Default weight
