@@ -1,5 +1,5 @@
 """
-RAG Retrieval Chain for ClinChat Application
+RAG Retrieval Chain for HealthAI Application
 Combines document retrieval with AI generation for question answering
 """
 
@@ -15,8 +15,8 @@ root_dir = os.path.dirname(src_dir)
 sys.path.insert(0, root_dir)
 sys.path.insert(0, src_dir)
 
-from src.embeddings.openai_embed import ClinChatEmbedding
-from src.vectorstore.faiss_store import ClinChatVectorStore
+from src.embeddings.openai_embed import HealthAIEmbedding
+from src.vectorstore.faiss_store import HealthAIVectorStore
 from src.services.fusion_ai import FusionAIService
 from src.ingestion.pdf_parser import PDFParser
 
@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 class RAGRetriever:
     """Document retrieval component for RAG"""
     
-    def __init__(self, vector_store: ClinChatVectorStore, embedder: ClinChatEmbedding):
+    def __init__(self, vector_store: HealthAIVectorStore, embedder: HealthAIEmbedding):
         """
         Initialize RAG retriever
         
@@ -151,12 +151,12 @@ Answer:"""
         return prompt
 
 
-class ClinChatRAG:
-    """Complete RAG system for ClinChat application"""
+class HealthAIRAG:
+    """Complete RAG system for HealthAI application"""
     
     def __init__(self, vectorstore_path: str = "data/vectorstore"):
         """
-        Initialize ClinChat RAG system
+        Initialize HealthAI RAG system
         
         Args:
             vectorstore_path: Path to vector database storage
@@ -164,15 +164,15 @@ class ClinChatRAG:
         self.vectorstore_path = vectorstore_path
         
         # Initialize components
-        logger.info("Initializing ClinChat RAG system...")
+        logger.info("Initializing HealthAI RAG system...")
         
         try:
             # Initialize embedding system
-            self.embedder = ClinChatEmbedding()
+            self.embedder = HealthAIEmbedding()
             logger.info("✅ Embedding system initialized")
             
             # Initialize vector store
-            self.vector_store = ClinChatVectorStore(vectorstore_path)
+            self.vector_store = HealthAIVectorStore(vectorstore_path)
             logger.info("✅ Vector store initialized")
             
             # Initialize retriever
@@ -187,7 +187,7 @@ class ClinChatRAG:
             self.generator = RAGGenerator(self.ai_service)
             logger.info("✅ Generator initialized")
             
-            logger.info("🎉 ClinChat RAG system ready!")
+            logger.info("🎉 HealthAI RAG system ready!")
             
         except Exception as e:
             logger.error(f"Failed to initialize RAG system: {e}")
@@ -314,12 +314,12 @@ class ClinChatRAG:
 
 def test_rag_system():
     """Test the complete RAG system"""
-    print("🧠 Testing ClinChat RAG System")
+    print("🧠 Testing HealthAI RAG System")
     print("=" * 50)
     
     try:
         # Initialize RAG system
-        rag = ClinChatRAG(vectorstore_path="test_rag_vectorstore")
+        rag = HealthAIRAG(vectorstore_path="test_rag_vectorstore")
         
         # Create sample documents for testing
         sample_chunks = [

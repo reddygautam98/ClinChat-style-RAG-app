@@ -1,5 +1,5 @@
 """
-Medical Data Generator for ClinChat RAG Application
+Medical Data Generator for HealthAI RAG Application
 Generates realistic clinical data for testing and training purposes.
 """
 
@@ -190,4 +190,4 @@ if __name__ == "__main__":
     
     print("\n✅ Medical dataset generation completed successfully!")
     print("📊 Dataset includes: Patient demographics, symptoms, diagnoses, treatments, vital signs, lab values, and clinical notes")
-    print("🏥 Ready for use in ClinChat RAG application for testing and training purposes")
+    print("🏥 Ready for use in HealthAI RAG application for testing and training purposes")

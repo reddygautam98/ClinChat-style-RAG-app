@@ -1,5 +1,5 @@
 """
-RAG Integration Example for ClinChat Medical Dataset
+RAG Integration Example for HealthAI Medical Dataset
 Shows how to use the generated medical data in your RAG application.
 """
 
@@ -169,7 +169,7 @@ def save_rag_documents(documents: List[Dict], output_file: str = "data/rag_docum
 def demonstrate_rag_integration():
     """Demonstrate how to integrate the medical data with RAG"""
     
-    print("🏥 ClinChat RAG Integration Demo")
+    print("🏥 HealthAI RAG Integration Demo")
     print("=" * 50)
     
     # 1. Load medical data

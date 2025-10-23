@@ -1,5 +1,5 @@
 """
-PDF Parser Module for ClinChat RAG Application
+PDF Parser Module for HealthAI RAG Application
 Extracts text from PDF files and creates text chunks for embeddings
 """
 

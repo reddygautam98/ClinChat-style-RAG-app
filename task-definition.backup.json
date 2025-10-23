@@ -1,0 +1,77 @@
+{
+  "family": "clinchat-rag-task",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "cpu": "512",
+  "memory": "1024",
+  "executionRoleArn": "arn:aws:iam::{account-id}:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::{account-id}:role/ecsTaskRole",
+  "containerDefinitions": [
+    {
+      "name": "clinchat-container",
+      "image": "{account-id}.dkr.ecr.{region}.amazonaws.com/clinchat-rag:latest",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 8080,
+          "hostPort": 8080,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        {
+          "name": "GOOGLE_GEMINI_API_KEY",
+          "value": "your-gemini-api-key"
+        },
+        {
+          "name": "GROQ_API_KEY",
+          "value": "your-groq-api-key"
+        },
+        {
+          "name": "FUSION_STRATEGY",
+          "value": "weighted_average"
+        },
+        {
+          "name": "GEMINI_WEIGHT",
+          "value": "0.6"
+        },
+        {
+          "name": "GROQ_WEIGHT",
+          "value": "0.4"
+        },
+        {
+          "name": "PORT",
+          "value": "8080"
+        },
+        {
+          "name": "DEBUG",
+          "value": "True"
+        },
+        {
+          "name": "HOST",
+          "value": "0.0.0.0"
+        }
+      ],
+      "healthCheck": {
+        "command": [
+          "CMD-SHELL",
+          "curl -f http://localhost:8080/health || exit 1"
+        ],
+        "interval": 30,
+        "timeout": 5,
+        "startPeriod": 60,
+        "retries": 3
+      },
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/clinchat-rag",
+          "awslogs-region": "{region}",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
+    }
+  ]
+}

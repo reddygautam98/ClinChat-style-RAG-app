@@ -1,5 +1,5 @@
 """
-Data Explorer for ClinChat RAG Medical Dataset
+Data Explorer for HealthAI RAG Medical Dataset
 Provides analysis and insights into the generated medical data.
 """
 
@@ -148,5 +148,5 @@ if __name__ == "__main__":
     show_sample_records(df, 3)
     
     print(f"\n✅ Data exploration completed!")
-    print(f"💡 This dataset is ready for use in your ClinChat RAG application")
+    print(f"💡 This dataset is ready for use in your HealthAI RAG application")
     print(f"🔬 Use this data for testing queries, training embeddings, and RAG evaluation")

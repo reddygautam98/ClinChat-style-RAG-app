@@ -1,5 +1,5 @@
 """
-End-to-end test for ClinChat RAG Application
+End-to-end test for HealthAI RAG Application
 Tests the complete pipeline: PDF ingestion -> Embedding -> Vector Store -> RAG Query
 """
 
@@ -12,19 +12,19 @@ from pathlib import Path
 current_dir = os.path.dirname(__file__)
 sys.path.insert(0, current_dir)
 
-from src.rag.retrieval_chain import ClinChatRAG
+from src.rag.retrieval_chain import HealthAIRAG
 
 
 def test_complete_rag_pipeline():
     """Test the complete RAG pipeline with real PDFs"""
     
-    print("🚀 Starting End-to-End ClinChat RAG Test")
+    print("🚀 Starting End-to-End HealthAI RAG Test")
     print("=" * 60)
     
     try:
         # Initialize RAG system
         print("1. Initializing RAG system...")
-        rag = ClinChatRAG(vectorstore_path="data/vectorstore")
+        rag = HealthAIRAG(vectorstore_path="data/vectorstore")
         print("   ✅ RAG system initialized")
         
         # Check if PDFs exist
@@ -184,12 +184,12 @@ def test_document_retrieval_only():
     print("=" * 50)
     
     try:
-        from src.embeddings.openai_embed import ClinChatEmbedding
-        from src.vectorstore.faiss_store import ClinChatVectorStore
+        from src.embeddings.openai_embed import HealthAIEmbedding
+        from src.vectorstore.faiss_store import HealthAIVectorStore
         
         # Initialize components
-        embedder = ClinChatEmbedding()
-        vector_store = ClinChatVectorStore("data/vectorstore")
+        embedder = HealthAIEmbedding()
+        vector_store = HealthAIVectorStore("data/vectorstore")
         
         # Test queries for retrieval
         test_queries = [
@@ -220,7 +220,7 @@ def test_document_retrieval_only():
 
 
 if __name__ == "__main__":
-    print("🏥 ClinChat RAG Application - End-to-End Testing")
+    print("🏥 HealthAI RAG Application - End-to-End Testing")
     print("=" * 60)
     
     # Run complete test
@@ -240,6 +240,6 @@ if __name__ == "__main__":
     print("🏁 Testing completed")
     
     if complete_test_passed:
-        print("🎉 All systems operational - ClinChat RAG is ready!")
+        print("🎉 All systems operational - HealthAI RAG is ready!")
     else:
         print("⚠️  Some components need attention - check API configurations")

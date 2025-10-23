@@ -1,5 +1,5 @@
 """
-Create sample PDF documents for testing ClinChat RAG system
+Create sample PDF documents for testing HealthAI RAG system
 """
 
 from reportlab.lib.pagesizes import letter
@@ -245,7 +245,7 @@ def create_cardiac_care_pdf(filename="data/pdfs/cardiac_care.pdf"):
 
 def create_all_test_pdfs():
     """Create all test PDFs"""
-    print("Creating test PDFs for ClinChat RAG system...")
+    print("Creating test PDFs for HealthAI RAG system...")
     
     create_diabetes_guide_pdf()
     create_hypertension_pdf() 

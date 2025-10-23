@@ -4,7 +4,7 @@ from typing import Optional
 
 class Settings(BaseSettings):
     # Application
-    APP_NAME: str = "ClinChat RAG"
+    APP_NAME: str = "HealthAI RAG"
     APP_VERSION: str = "1.0.0"
     DEBUG: bool = True
     HOST: str = "0.0.0.0"
@@ -43,7 +43,7 @@ class Settings(BaseSettings):
 
     # Logging
     LOG_LEVEL: str = "INFO"
-    LOG_FILE: str = "logs/clinchat.log"
+    LOG_FILE: str = "logs/healthai.log"
 
     class Config:
         env_file = ".env"

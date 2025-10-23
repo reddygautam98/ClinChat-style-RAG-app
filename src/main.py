@@ -12,13 +12,13 @@ async def lifespan(app: FastAPI):
     print(f"Starting {settings.APP_NAME} v{settings.APP_VERSION}")
     yield
     # Shutdown
-    print("Shutting down ClinChat RAG application")
+    print("Shutting down HealthAI RAG application")
 
 
 app = FastAPI(
     title=settings.APP_NAME,
     version=settings.APP_VERSION,
-    description="Clinical chat application with RAG capabilities",
+    description="HealthAI chat application with RAG capabilities",
     lifespan=lifespan
 )
 

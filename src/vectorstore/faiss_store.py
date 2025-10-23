@@ -1,5 +1,5 @@
 """
-Vector Store Module for ClinChat RAG Application
+Vector Store Module for HealthAI RAG Application
 Handles document indexing and similarity search using FAISS
 """
 
@@ -271,12 +271,12 @@ class FAISSVectorStore:
         return instance
 
 
-class ClinChatVectorStore:
-    """High-level vector store interface for ClinChat"""
+class HealthAIVectorStore:
+    """High-level vector store interface for HealthAI"""
     
     def __init__(self, storage_path: str = "data/vectorstore", dimension: int = 384):
         """
-        Initialize ClinChat vector store
+        Initialize HealthAI vector store
         
         Args:
             storage_path: Path to store the vector database
@@ -343,7 +343,7 @@ class ClinChatVectorStore:
 
 def test_vector_store():
     """Test the vector store functionality"""
-    print("🔍 Testing ClinChat Vector Store")
+    print("🔍 Testing HealthAI Vector Store")
     print("=" * 50)
     
     try:

@@ -1,8 +1,8 @@
 """
-ClinChat RAG Module
+HealthAI RAG Module
 Retrieval-Augmented Generation system for medical question answering
 """
 
-from .retrieval_chain import ClinChatRAG, RAGRetriever, RAGGenerator
+from .retrieval_chain import HealthAIRAG, RAGRetriever, RAGGenerator
 
-__all__ = ["ClinChatRAG", "RAGRetriever", "RAGGenerator"]
+__all__ = ["HealthAIRAG", "RAGRetriever", "RAGGenerator"]

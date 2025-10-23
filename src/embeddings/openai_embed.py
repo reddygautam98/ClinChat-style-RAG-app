@@ -1,5 +1,5 @@
 """
-Embeddings Module for ClinChat RAG Application
+Embeddings Module for HealthAI RAG Application
 Creates text embeddings using Google Gemini and Groq APIs with fusion capabilities
 """
 
@@ -155,11 +155,11 @@ class FusionEmbedding:
         return [self.embed_text(text) for text in texts]
 
 
-class ClinChatEmbedding:
-    """Main embedding class for ClinChat application"""
+class HealthAIEmbedding:
+    """Main embedding class for HealthAI application"""
     
     def __init__(self):
-        """Initialize ClinChat embedding system"""
+        """Initialize HealthAI embedding system"""
         self.providers = []
         self.fusion_embedding = None
         
@@ -256,12 +256,12 @@ class ClinChatEmbedding:
 
 def test_embeddings():
     """Test the embedding system"""
-    print("🧪 Testing ClinChat Embedding System")
+    print("🧪 Testing HealthAI Embedding System")
     print("=" * 50)
     
     try:
         # Initialize embedding system
-        embedder = ClinChatEmbedding()
+        embedder = HealthAIEmbedding()
         
         # Test single text embedding
         test_text = "Diabetes is a chronic condition that affects blood sugar levels."

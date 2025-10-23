@@ -15,7 +15,7 @@ load_dotenv()
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-app = FastAPI(title="ClinChat RAG - Demo")
+app = FastAPI(title="HealthAI RAG - Demo")
 
 class Query(BaseModel):
     question: str
@@ -218,7 +218,7 @@ async def health():
 async def root():
     """Root endpoint"""
     return {
-        "message": "ClinChat RAG - Medical AI Assistant",
+        "message": "HealthAI RAG - Medical AI Assistant",
         "version": "1.0.0",
         "docs": "/docs",
         "health": "/health"
