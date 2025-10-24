@@ -347,25 +347,28 @@ def test_vector_store():
     print("=" * 50)
     
     try:
+        # Create secure random generator with seed for reproducibility
+        rng = np.random.default_rng(42)
+        
         # Create sample chunks with embeddings
         sample_chunks = [
             {
                 "text": "Diabetes is a chronic condition that affects blood sugar levels. Regular monitoring is essential.",
                 "source": "diabetes_guide.pdf",
                 "chunk_index": 0,
-                "embedding": np.random.rand(384).tolist()  # Mock embedding
+                "embedding": rng.random(384).tolist()  # Secure random embedding
             },
             {
                 "text": "Hypertension, or high blood pressure, is a major risk factor for cardiovascular disease.",
                 "source": "hypertension_info.pdf", 
                 "chunk_index": 0,
-                "embedding": np.random.rand(384).tolist()  # Mock embedding
+                "embedding": rng.random(384).tolist()  # Secure random embedding
             },
             {
                 "text": "Regular exercise and proper diet are crucial for managing diabetes effectively.",
                 "source": "diabetes_guide.pdf",
                 "chunk_index": 1,
-                "embedding": np.random.rand(384).tolist()  # Mock embedding
+                "embedding": rng.random(384).tolist()  # Secure random embedding
             }
         ]
         
@@ -377,7 +380,7 @@ def test_vector_store():
         vector_store.add_documents(sample_chunks)
         
         # Test search
-        query_embedding = np.random.rand(384).tolist()
+        query_embedding = rng.random(384).tolist()
         results = vector_store.similarity_search(query_embedding, k=2)
         
         print(f"✅ Search completed - Found {len(results)} results")
@@ -393,7 +396,7 @@ def test_vector_store():
         vector_store.save(test_dir)
         loaded_store = FAISSVectorStore.load(test_dir)
         
-        print(f"✅ Save/Load test passed")
+        print("✅ Save/Load test passed")
         print(f"   Original docs: {len(vector_store.documents)}")
         print(f"   Loaded docs: {len(loaded_store.documents)}")
         

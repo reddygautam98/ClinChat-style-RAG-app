@@ -1,7 +1,8 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
 from contextlib import asynccontextmanager
+import os
 import uvicorn
 from src.core.config import settings
 from src.api.routes import router
@@ -23,13 +24,24 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# Add CORS middleware
+# Add CORS middleware with security-first configuration
+allowed_origins = [
+    "http://localhost:3000",  # React dev server
+    "http://localhost:8000",  # FastAPI dev server  
+    "http://127.0.0.1:3000",
+    "http://127.0.0.1:8000"
+]
+
+# Add production origins from environment if available
+if production_origins := os.getenv("ALLOWED_ORIGINS"):
+    allowed_origins.extend(production_origins.split(","))
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Configure appropriately for production
+    allow_origins=allowed_origins,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST"],  # Restrict to needed methods
+    allow_headers=["Content-Type", "Authorization"],  # Restrict headers
 )
 
 # Include API routes

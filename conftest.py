@@ -40,10 +40,11 @@ def test_client():
 def mock_embeddings():
     """Mock embeddings for testing"""
     import numpy as np
+    rng = np.random.default_rng(42)  # Secure seeded generator for reproducible tests
     return {
-        "test_doc_1": np.random.rand(384),
-        "test_doc_2": np.random.rand(384),
-        "test_doc_3": np.random.rand(384)
+        "test_doc_1": rng.random(384),
+        "test_doc_2": rng.random(384),
+        "test_doc_3": rng.random(384)
     }
 
 
