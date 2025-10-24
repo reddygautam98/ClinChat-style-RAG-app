@@ -1,16 +1,16 @@
 {
   "metadata": {
-    "created_date": "2025-10-23T22:37:00.909896",
+    "created_date": "2025-10-25T01:00:33.914273",
     "version": "1.0",
     "total_test_cases": 13,
     "categories": [
-      "adversarial",
+      "treatment",
       "symptoms",
-      "prevention",
       "edge_case",
       "diagnosis",
-      "treatment",
-      "complex"
+      "complex",
+      "adversarial",
+      "prevention"
     ],
     "difficulty_levels": [
       "easy",
@@ -38,7 +38,7 @@
         "clinical_guidelines",
         "medical_literature"
       ],
-      "created_date": "2025-10-23T22:37:00.909912",
+      "created_date": "2025-10-25T01:00:33.914295",
       "version": "1.0",
       "requires_context": true,
       "evaluation_criteria": {
@@ -67,7 +67,7 @@
         "diagnostic_criteria",
         "clinical_guidelines"
       ],
-      "created_date": "2025-10-23T22:37:00.909915",
+      "created_date": "2025-10-25T01:00:33.914300",
       "version": "1.0",
       "requires_context": true,
       "evaluation_criteria": {
@@ -96,7 +96,7 @@
         "treatment_guidelines",
         "pharmacology"
       ],
-      "created_date": "2025-10-23T22:37:00.909917",
+      "created_date": "2025-10-25T01:00:33.914302",
       "version": "1.0",
       "requires_context": true,
       "evaluation_criteria": {
@@ -124,7 +124,7 @@
         "obstetric_guidelines",
         "endocrinology"
       ],
-      "created_date": "2025-10-23T22:37:00.909918",
+      "created_date": "2025-10-25T01:00:33.914303",
       "version": "1.0",
       "requires_context": true,
       "evaluation_criteria": {
@@ -152,7 +152,7 @@
         "diagnostic_guidelines",
         "cardiology"
       ],
-      "created_date": "2025-10-23T22:37:00.909919",
+      "created_date": "2025-10-25T01:00:33.914305",
       "version": "1.0",
       "requires_context": true,
       "evaluation_criteria": {
@@ -180,7 +180,7 @@
         "prevention_guidelines",
         "lifestyle_medicine"
       ],
-      "created_date": "2025-10-23T22:37:00.909920",
+      "created_date": "2025-10-25T01:00:33.914306",
       "version": "1.0",
       "requires_context": true,
       "evaluation_criteria": {
@@ -209,7 +209,7 @@
         "endocrinology",
         "clinical_guidelines"
       ],
-      "created_date": "2025-10-23T22:37:00.909925",
+      "created_date": "2025-10-25T01:00:33.914308",
       "version": "1.0",
       "requires_context": true,
       "evaluation_criteria": {
@@ -237,7 +237,7 @@
         "emergency_medicine",
         "clinical_guidelines"
       ],
-      "created_date": "2025-10-23T22:37:00.909926",
+      "created_date": "2025-10-25T01:00:33.914309",
       "version": "1.0",
       "requires_context": true,
       "evaluation_criteria": {
@@ -264,7 +264,7 @@
         "medical_ethics",
         "clinical_guidelines"
       ],
-      "created_date": "2025-10-23T22:37:00.909927",
+      "created_date": "2025-10-25T01:00:33.914310",
       "version": "1.0",
       "requires_context": true,
       "evaluation_criteria": {
