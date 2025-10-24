@@ -243,7 +243,13 @@ async def health():
         for service_name, service_data in ai_services.items():
             if isinstance(service_data, dict):
                 status = service_data.get("status", "unknown")
-                legacy_response["models"][service_name] = "healthy" if status == "healthy" else "error"
+                # Preserve 'not_configured' from detailed checks; map other non-healthy states to 'error'
+                if status == "healthy":
+                    legacy_response["models"][service_name] = "healthy"
+                elif status == "not_configured":
+                    legacy_response["models"][service_name] = "not_configured"
+                else:
+                    legacy_response["models"][service_name] = "error"
         
         # Check if fusion is enabled (both services healthy)
         gemini_healthy = legacy_response["models"].get("gemini") == "healthy"
