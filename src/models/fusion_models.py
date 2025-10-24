@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Optional, Dict, Any
 from enum import Enum
 
@@ -12,6 +12,8 @@ class FusionStrategy(str, Enum):
 
 class ModelResponseModel(BaseModel):
     """Response from an individual AI model"""
+    model_config = ConfigDict(protected_namespaces=())
+    
     content: str = Field(..., description="The generated content from the model")
     confidence: float = Field(..., ge=0.0, le=1.0, description="Confidence score of the response")
     model_name: str = Field(..., description="Name of the AI model that generated this response")
@@ -49,6 +51,8 @@ class FusionProcessingDetails(BaseModel):
 
 class FusionChatResponse(BaseModel):
     """Enhanced response from fusion AI system"""
+    model_config = ConfigDict(protected_namespaces=())
+    
     response: str = Field(..., description="Final fused response")
     conversation_id: str = Field(..., description="Conversation identifier")
     
@@ -78,6 +82,8 @@ class FusionHealthStatus(BaseModel):
 
 class FusionMetrics(BaseModel):
     """Performance metrics for fusion AI system"""
+    model_config = ConfigDict(protected_namespaces=())
+    
     total_requests: int = Field(0, description="Total fusion requests processed")
     successful_fusions: int = Field(0, description="Successful fusion operations")
     fallback_count: int = Field(0, description="Times fallback was used")
