@@ -8,15 +8,82 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import json
-import sqlite3
 from datetime import datetime, timedelta
 from pathlib import Path
 import sys
+from typing import Dict, Any
 
 # Add src to path
 sys.path.append(str(Path(__file__).parent / "src"))
 
-from src.monitoring.performance_monitor import PerformanceMonitor, RAGPerformanceTracker
+from src.monitoring.performance_monitor import PerformanceMonitor
+
+
+# Constants for consistent styling
+class DashboardConstants:
+    """Constants for dashboard styling and configuration"""
+    TRANSPARENT_BG = 'rgba(0,0,0,0)'
+    WHITE_TEXT = 'white'
+    TITLE_FONT_SIZE = 16
+
+
+# Professional Color Schemes for Different Chart Sections
+class ColorSchemes:
+    """Professional color schemes for dashboard charts"""
+    
+    # Performance Metrics - Blue tones (reliability, trust)
+    PERFORMANCE = {
+        'primary': '#2E86AB',      # Deep blue
+        'secondary': '#A23B72',    # Purple-pink
+        'accent': '#F18F01',       # Orange
+        'background': '#C73E1D',   # Red
+        'gradient': ['#2E86AB', '#4A90E2', '#7BB3F0', '#B8D4F0']
+    }
+    
+    # Quality Metrics - Green tones (success, quality)
+    QUALITY = {
+        'primary': '#27AE60',      # Emerald green
+        'secondary': '#2ECC71',    # Green
+        'accent': '#F39C12',       # Orange
+        'background': '#E67E22',   # Dark orange
+        'gradient': ['#27AE60', '#2ECC71', '#58D68D', '#85E085']
+    }
+    
+    # A/B Testing - Purple tones (innovation, analysis)
+    TESTING = {
+        'primary': '#8E44AD',      # Purple
+        'secondary': '#9B59B6',    # Light purple
+        'accent': '#E74C3C',       # Red
+        'background': '#34495E',   # Dark gray
+        'gradient': ['#8E44AD', '#9B59B6', '#BB8FCE', '#D7BDE2']
+    }
+    
+    # Data Analysis - Teal tones (analytical, modern)
+    ANALYTICS = {
+        'primary': '#16A085',      # Teal
+        'secondary': '#1ABC9C',    # Turquoise
+        'accent': '#F1C40F',       # Yellow
+        'background': '#E67E22',   # Orange
+        'gradient': ['#16A085', '#1ABC9C', '#48C9B0', '#76D7C4']
+    }
+    
+    # Health Status - Medical tones (healthcare)
+    HEALTH = {
+        'primary': '#E74C3C',      # Medical red
+        'secondary': '#3498DB',    # Medical blue
+        'accent': '#2ECC71',       # Success green
+        'background': '#95A5A6',   # Gray
+        'gradient': ['#E74C3C', '#EC7063', '#F1948A', '#F5B7B1']
+    }
+    
+    # Evaluation - Orange tones (energy, evaluation)
+    EVALUATION = {
+        'primary': '#FF6B6B',      # Coral
+        'secondary': '#4ECDC4',    # Mint
+        'accent': '#45B7D1',       # Sky blue
+        'background': '#FFA07A',   # Light salmon
+        'gradient': ['#FF6B6B', '#FF8E8E', '#FFB1B1', '#FFD4D4']
+    }
 
 
 class HealthAIDashboard:
@@ -86,7 +153,7 @@ class HealthAIDashboard:
         st.sidebar.header("⚙️ Controls")
         
         # Time range selector
-        time_range = st.sidebar.selectbox(
+        st.sidebar.selectbox(
             "Time Range",
             ["Last Hour", "Last 24 Hours", "Last 7 Days", "Last 30 Days"]
         )
@@ -114,15 +181,15 @@ class HealthAIDashboard:
         st.sidebar.subheader("🚀 Quick Actions")
         
         if st.sidebar.button("📊 Run Evaluation"):
-            st.sidebar.info("Evaluation started...")
+            self.run_evaluation()
             
         if st.sidebar.button("🧪 Start A/B Test"):
-            st.sidebar.info("A/B test configured...")
+            self.start_ab_test()
             
         if st.sidebar.button("📈 Generate Report"):
-            st.sidebar.success("Report generated!")
+            self.generate_report()
     
-    def get_key_metrics(self) -> dict:
+    def get_key_metrics(self) -> Dict[str, Any]:
         """Get key performance metrics"""
         dashboard_data = self.monitor.get_performance_dashboard()
         
@@ -140,9 +207,9 @@ class HealthAIDashboard:
             'queries_delta': 15
         }
     
-    def _safe_get_metric(self, metrics: dict, metric_name: str, field: str, default: float) -> float:
+    def _safe_get_metric(self, metrics: Dict[str, Any], category: str, metric_type: str, default: float = 0) -> float:
         """Safely extract metric value"""
-        return metrics.get(metric_name, {}).get(field, default)
+        return metrics.get(category, {}).get(metric_type, default)
     
     def render_performance_section(self):
         """Render performance monitoring section"""
@@ -154,7 +221,7 @@ class HealthAIDashboard:
             st.subheader("Response Time Trends")
             
             # Generate mock time series data
-            dates = pd.date_range(start=datetime.now() - timedelta(days=7), end=datetime.now(), freq='1H')
+            dates = pd.date_range(start=datetime.now() - timedelta(days=7), end=datetime.now(), freq='1h')
             response_times = [0.8 + 0.3 * (i % 24) / 24 + 0.1 * (i % 7) for i in range(len(dates))]
             
             df = pd.DataFrame({
@@ -163,8 +230,16 @@ class HealthAIDashboard:
             })
             
             fig = px.line(df, x='timestamp', y='response_time', 
-                         title='Response Time Over Time')
-            fig.update_layout(height=300)
+                         title='Response Time Over Time',
+                         color_discrete_sequence=[ColorSchemes.PERFORMANCE['primary']])
+            fig.update_layout(
+                height=300,
+                plot_bgcolor=DashboardConstants.TRANSPARENT_BG,
+                paper_bgcolor=DashboardConstants.TRANSPARENT_BG,
+                font={'color': DashboardConstants.WHITE_TEXT},
+                title={'font': {'size': DashboardConstants.TITLE_FONT_SIZE, 'color': ColorSchemes.PERFORMANCE['primary']}}
+            )
+            fig.update_traces(line={'width': 3})
             st.plotly_chart(fig, use_container_width=True)
         
         with col2:
@@ -173,12 +248,23 @@ class HealthAIDashboard:
             # Mock confidence score data
             confidence_scores = [0.7, 0.8, 0.85, 0.9, 0.75, 0.92, 0.88, 0.83, 0.79, 0.91]
             
-            fig = go.Figure(data=go.Histogram(x=confidence_scores, nbinsx=10))
+            fig = go.Figure(data=go.Histogram(
+                x=confidence_scores, 
+                nbinsx=10,
+                marker_color=ColorSchemes.QUALITY['primary'],
+                opacity=0.8
+            ))
             fig.update_layout(
-                title='Confidence Score Distribution',
+                title={
+                    'text': 'Confidence Score Distribution',
+                    'font': {'size': 16, 'color': ColorSchemes.QUALITY['primary']}
+                },
                 xaxis_title='Confidence Score',
                 yaxis_title='Frequency',
-                height=300
+                height=300,
+                plot_bgcolor=DashboardConstants.TRANSPARENT_BG,
+                paper_bgcolor=DashboardConstants.TRANSPARENT_BG,
+                font={'color': DashboardConstants.WHITE_TEXT}
             )
             st.plotly_chart(fig, use_container_width=True)
         
@@ -193,9 +279,18 @@ class HealthAIDashboard:
             fig = px.pie(
                 values=list(model_data.values()), 
                 names=list(model_data.keys()),
-                title="Model Usage Distribution"
+                title="Model Usage Distribution",
+                color_discrete_sequence=ColorSchemes.ANALYTICS['gradient']
             )
-            fig.update_layout(height=300)
+            fig.update_layout(
+                height=300,
+                plot_bgcolor=DashboardConstants.TRANSPARENT_BG,
+                paper_bgcolor=DashboardConstants.TRANSPARENT_BG,
+                font={'color': DashboardConstants.WHITE_TEXT},
+                title={
+                    'font': {'size': DashboardConstants.TITLE_FONT_SIZE, 'color': ColorSchemes.ANALYTICS['primary']}
+                }
+            )
             st.plotly_chart(fig, use_container_width=True)
         
         with col2:
@@ -245,8 +340,15 @@ class HealthAIDashboard:
             conversion_rates = [0.82, 0.85, 0.79]
             
             fig = px.bar(x=variants, y=conversion_rates, 
-                        title='User Satisfaction by Variant')
-            fig.update_layout(height=300)
+                        title='User Satisfaction by Variant',
+                        color_discrete_sequence=ColorSchemes.TESTING['gradient'])
+            fig.update_layout(
+                height=300,
+                plot_bgcolor=DashboardConstants.TRANSPARENT_BG,
+                paper_bgcolor=DashboardConstants.TRANSPARENT_BG,
+                font={'color': DashboardConstants.WHITE_TEXT},
+                title={'font': {'size': DashboardConstants.TITLE_FONT_SIZE, 'color': ColorSchemes.QUALITY['primary']}}
+            )
             st.plotly_chart(fig, use_container_width=True)
         
         with col2:
@@ -257,10 +359,17 @@ class HealthAIDashboard:
             p_values = [0.03, 0.12, 0.08]
             
             fig = px.bar(x=comparisons, y=p_values, 
-                        title='P-Values for Variant Comparisons')
-            fig.add_hline(y=0.05, line_dash="dash", line_color="red", 
+                        title='P-Values for Variant Comparisons',
+                        color_discrete_sequence=ColorSchemes.TESTING['gradient'])
+            fig.add_hline(y=0.05, line_dash="dash", line_color=ColorSchemes.TESTING['primary'], 
                          annotation_text="Significance Threshold")
-            fig.update_layout(height=300)
+            fig.update_layout(
+                height=300,
+                plot_bgcolor=DashboardConstants.TRANSPARENT_BG,
+                paper_bgcolor=DashboardConstants.TRANSPARENT_BG,
+                font={'color': DashboardConstants.WHITE_TEXT},
+                title={'font': {'size': DashboardConstants.TITLE_FONT_SIZE, 'color': ColorSchemes.TESTING['primary']}}
+            )
             st.plotly_chart(fig, use_container_width=True)
     
     def render_data_quality_section(self):
@@ -300,14 +409,28 @@ class HealthAIDashboard:
             
             with col1:
                 st.subheader("Age Distribution")
-                fig = px.histogram(df, x='age', nbins=20, title='Patient Age Distribution')
+                fig = px.histogram(df, x='age', nbins=20, title='Patient Age Distribution',
+                                 color_discrete_sequence=[ColorSchemes.HEALTH['primary']])
+                fig.update_layout(
+                    plot_bgcolor=DashboardConstants.TRANSPARENT_BG,
+                    paper_bgcolor=DashboardConstants.TRANSPARENT_BG,
+                    font={'color': DashboardConstants.WHITE_TEXT},
+                    title={'font': {'size': DashboardConstants.TITLE_FONT_SIZE, 'color': ColorSchemes.HEALTH['primary']}}
+                )
                 st.plotly_chart(fig, use_container_width=True)
             
             with col2:
                 st.subheader("Gender Distribution")
                 gender_counts = df['gender'].value_counts()
                 fig = px.pie(values=gender_counts.values, names=gender_counts.index,
-                            title='Gender Distribution')
+                            title='Gender Distribution',
+                            color_discrete_sequence=ColorSchemes.HEALTH['gradient'])
+                fig.update_layout(
+                    plot_bgcolor=DashboardConstants.TRANSPARENT_BG,
+                    paper_bgcolor=DashboardConstants.TRANSPARENT_BG,
+                    font={'color': DashboardConstants.WHITE_TEXT},
+                    title={'font': {'size': DashboardConstants.TITLE_FONT_SIZE, 'color': ColorSchemes.HEALTH['secondary']}}
+                )
                 st.plotly_chart(fig, use_container_width=True)
         
         else:
@@ -347,9 +470,16 @@ class HealthAIDashboard:
             })
             
             fig = px.bar(results_df, x='Category', y='Accuracy', 
-                        title='Model Accuracy by Test Category')
-            fig.add_hline(y=0.8, line_dash="dash", line_color="orange", 
+                        title='Model Accuracy by Test Category',
+                        color_discrete_sequence=ColorSchemes.EVALUATION['gradient'])
+            fig.add_hline(y=0.8, line_dash="dash", line_color=ColorSchemes.EVALUATION['primary'], 
                          annotation_text="Target Accuracy")
+            fig.update_layout(
+                plot_bgcolor=DashboardConstants.TRANSPARENT_BG,
+                paper_bgcolor=DashboardConstants.TRANSPARENT_BG,
+                font={'color': DashboardConstants.WHITE_TEXT},
+                title={'font': {'size': DashboardConstants.TITLE_FONT_SIZE, 'color': ColorSchemes.ANALYTICS['secondary']}}
+            )
             st.plotly_chart(fig, use_container_width=True)
             
             # Detailed test results table
@@ -374,6 +504,87 @@ class HealthAIDashboard:
             
         else:
             st.warning("Test dataset not found. Run the data science integration script first.")
+    
+    def run_evaluation(self):
+        """Run comprehensive evaluation"""
+        try:
+            st.sidebar.info("🔄 Starting evaluation...")
+            
+            # Import the data science controller
+            import sys
+            from pathlib import Path
+            sys.path.append(str(Path(__file__).parent))
+            
+            from data_science_integration import DataScienceController
+            
+            # Run evaluation
+            controller = DataScienceController()
+            results = controller.run_comprehensive_evaluation()
+            
+            st.sidebar.success("✅ Evaluation completed!")
+            st.session_state['evaluation_results'] = results
+            st.rerun()
+            
+        except Exception as e:
+            st.sidebar.error(f"❌ Evaluation failed: {str(e)}")
+    
+    def start_ab_test(self):
+        """Start A/B test"""
+        try:
+            st.sidebar.info("🧪 Starting A/B test...")
+            
+            # Import A/B testing modules
+            from src.evaluation.ab_testing import ABTestManager
+            
+            # Initialize A/B test
+            ab_manager = ABTestManager()
+            test = ab_manager.create_fusion_strategy_test()
+            
+            st.sidebar.success(f"✅ A/B test '{test.name}' started!")
+            st.session_state['ab_test_active'] = test.name
+            st.rerun()
+            
+        except Exception as e:
+            st.sidebar.error(f"❌ A/B test failed: {str(e)}")
+    
+    def generate_report(self):
+        """Generate comprehensive report"""
+        try:
+            st.sidebar.info("📝 Generating report...")
+            
+            # Import data science controller
+            from data_science_integration import DataScienceController
+            
+            # Generate report
+            controller = DataScienceController()
+            report_content = controller.generate_data_science_report()
+            
+            # Save report to file
+            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+            report_path = f"data/dashboard_report_{timestamp}.md"
+            
+            # Ensure data directory exists
+            Path("data").mkdir(exist_ok=True)
+            
+            with open(report_path, 'w', encoding='utf-8') as f:
+                f.write(report_content)
+            
+            st.sidebar.success("📈 Report generated!")
+            st.session_state['latest_report'] = report_path
+            
+            # Show download link
+            
+            st.sidebar.download_button(
+                label="📥 Download Report",
+                data=report_content,
+                file_name=f"healthai_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.md",
+                mime="text/markdown"
+            )
+            
+            st.rerun()
+            
+        except Exception as e:
+            st.sidebar.error(f"❌ Report generation failed: {str(e)}")
 
 
 def main():
