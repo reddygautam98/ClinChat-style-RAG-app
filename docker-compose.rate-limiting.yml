@@ -1,0 +1,56 @@
+# Production Docker Compose with Redis for Rate Limiting
+version: '3.8'
+
+services:
+  healthai-app:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-test-key}
+      - GROQ_API_KEY=${GROQ_API_KEY:-test-key}
+    depends_on:
+      - redis
+    networks:
+      - healthai-network
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          memory: 1G
+          cpus: '0.5'
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6380:6379"
+    command: redis-server --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis-data:/data
+    networks:
+      - healthai-network
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.2'
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - healthai-app
+    networks:
+      - healthai-network
+
+volumes:
+  redis-data:
+
+networks:
+  healthai-network:
+    driver: bridge

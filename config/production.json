@@ -1,0 +1,39 @@
+{
+  "security": {
+    "rate_limiting": {
+      "enabled": true,
+      "medical_queries_per_hour": 50,
+      "burst_limit_per_minute": 10,
+      "redis_url": "redis://localhost:6380/0"
+    },
+    "input_validation": {
+      "enabled": true,
+      "pii_detection": true,
+      "prompt_injection_prevention": true,
+      "medical_context_analysis": true
+    },
+    "hipaa_compliance": {
+      "enabled": true,
+      "audit_logging": true,
+      "encryption_at_rest": true,
+      "access_controls": true
+    }
+  },
+  "cost_optimization": {
+    "cost_tracking": {
+      "enabled": true,
+      "daily_budget_limit": 100.0,
+      "weekly_budget_limit": 500.0,
+      "monthly_budget_limit": 2000.0
+    },
+    "model_optimization": {
+      "auto_model_selection": true,
+      "cost_priority": "balanced"
+    }
+  },
+  "monitoring": {
+    "cloudwatch_metrics": true,
+    "audit_logging": true,
+    "performance_tracking": true
+  }
+}
