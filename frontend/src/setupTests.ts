@@ -17,8 +17,6 @@ Object.defineProperty(window, 'matchMedia', {
 
 // Mock IntersectionObserver
 (window as any).IntersectionObserver = class IntersectionObserver {
-  constructor() {}
-
   disconnect() {
     return null;
   }
