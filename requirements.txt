@@ -43,3 +43,5 @@ spacy>=3.6.0
 rouge-score>=0.1.2
 bert-score>=0.3.13
 transformers>=4.33.0
+fuzzywuzzy>=0.18.0
+python-levenshtein>=0.21.0
