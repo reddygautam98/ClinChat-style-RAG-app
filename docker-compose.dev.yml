@@ -1,5 +1,4 @@
 # Development Docker Compose with Hot Reload and Debugging
-version: '3.8'
 
 services:
   # Main Application - Development Mode

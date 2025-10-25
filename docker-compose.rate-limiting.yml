@@ -1,5 +1,4 @@
 # Production Docker Compose with Redis for Rate Limiting and Enhanced Features
-version: '3.8'
 
 services:
   healthai-app:
