@@ -40,7 +40,7 @@ services:
       start_period: 30s
 
   redis:
-    image: redis:7.2-alpine
+    image: redis:7.2.4-alpine
     ports:
       - "6380:6379"
     command: redis-server --maxmemory 512mb --maxmemory-policy allkeys-lru --appendonly yes --save 900 1 --save 300 10 --save 60 10000
@@ -65,7 +65,7 @@ services:
       start_period: 10s
 
   nginx:
-    image: nginx:1.25-alpine
+    image: nginx:1.25.3-alpine
     ports:
       - "80:80"
       - "443:443"

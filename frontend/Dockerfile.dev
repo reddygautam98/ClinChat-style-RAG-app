@@ -1,5 +1,5 @@
 # Development Dockerfile for Frontend
-FROM node:20.11-alpine3.19
+FROM node:20.11.0-alpine3.19
 
 # Set working directory
 WORKDIR /app

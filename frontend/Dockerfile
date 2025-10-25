@@ -1,5 +1,5 @@
 # Multi-stage build for production frontend
-FROM node:20.11-alpine3.19 AS builder
+FROM node:20.11.0-alpine3.19 AS builder
 
 # Set working directory
 WORKDIR /app
@@ -27,7 +27,7 @@ COPY . .
 RUN npm run build
 
 # Production stage - serve with nginx
-FROM nginx:1.25-alpine
+FROM nginx:1.25.3-alpine
 
 # Copy built assets from builder stage
 COPY --from=builder /app/build /usr/share/nginx/html

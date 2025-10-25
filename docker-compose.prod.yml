@@ -3,7 +3,7 @@ version: '3.8'
 services:
   # Load Balancer with latest nginx
   nginx:
-    image: nginx:1.25-alpine
+    image: nginx:1.25.3-alpine
     container_name: healthai-nginx
     ports:
       - "80:80"
@@ -127,7 +127,7 @@ services:
 
   # Monitoring with latest Prometheus
   prometheus:
-    image: prom/prometheus:v2.48.0
+    image: prom/prometheus:v2.48.1
     container_name: healthai-prometheus
     ports:
       - "9090:9090"
@@ -152,7 +152,7 @@ services:
 
   # Redis for caching and session management
   redis:
-    image: redis:7.2-alpine
+    image: redis:7.2.4-alpine
     container_name: healthai-redis
     ports:
       - "6379:6379"
