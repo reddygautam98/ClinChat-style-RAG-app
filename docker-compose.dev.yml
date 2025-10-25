@@ -8,7 +8,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8000:8000"
+      - "8001:8000"
       - "5678:5678"  # Debugger port
     environment:
       - REDIS_URL=redis://redis:6379/0
@@ -36,9 +36,9 @@ services:
       context: ./frontend
       dockerfile: Dockerfile.dev
     ports:
-      - "3000:3000"
+      - "3002:3000"
     environment:
-      - REACT_APP_API_URL=http://localhost:8000
+      - REACT_APP_API_URL=http://localhost:8001
       - CHOKIDAR_USEPOLLING=true
     volumes:
       - ./frontend/src:/app/src:rw
@@ -74,7 +74,7 @@ services:
       - POSTGRES_USER=healthai
       - POSTGRES_PASSWORD=dev_password
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_dev_data:/var/lib/postgresql/data
       - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init.sql
