@@ -1,0 +1,107 @@
+# Development Docker Compose with Hot Reload and Debugging
+version: '3.8'
+
+services:
+  # Main Application - Development Mode
+  healthai-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+      - "5678:5678"  # Debugger port
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-test-key}
+      - GROQ_API_KEY=${GROQ_API_KEY:-test-key}
+      - PYTHONPATH=/app
+      - DEBUG=true
+      - RELOAD=true
+    volumes:
+      - ./src:/app/src:rw
+      - ./data:/app/data:rw
+      - ./logs:/app/logs:rw
+      - ./config:/app/config:rw
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - healthai-network
+    restart: unless-stopped
+    command: ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload", "--log-level", "debug"]
+
+  # Frontend Development Server (if needed)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000
+      - CHOKIDAR_USEPOLLING=true
+    volumes:
+      - ./frontend/src:/app/src:rw
+      - ./frontend/public:/app/public:rw
+      - /app/node_modules
+    networks:
+      - healthai-network
+    restart: unless-stopped
+
+  # Redis for Development
+  redis:
+    image: redis:7.2-alpine
+    ports:
+      - "6379:6379"
+    command: redis-server --loglevel debug
+    volumes:
+      - redis_dev_data:/data
+    networks:
+      - healthai-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+  # Database (if using PostgreSQL for development)
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_DB=healthai_dev
+      - POSTGRES_USER=healthai
+      - POSTGRES_PASSWORD=dev_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - healthai-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U healthai -d healthai_dev"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # Development Tools
+  adminer:
+    image: adminer:4.8.1
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    networks:
+      - healthai-network
+    restart: unless-stopped
+
+volumes:
+  redis_dev_data:
+  postgres_dev_data:
+
+networks:
+  healthai-network:
+    driver: bridge

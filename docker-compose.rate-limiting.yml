@@ -1,55 +1,93 @@
-# Production Docker Compose with Redis for Rate Limiting
+# Production Docker Compose with Redis for Rate Limiting and Enhanced Features
 version: '3.8'
 
 services:
   healthai-app:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.optimized
     ports:
       - "8000:8000"
     environment:
       - REDIS_URL=redis://redis:6379/0
       - GEMINI_API_KEY=${GEMINI_API_KEY:-test-key}
       - GROQ_API_KEY=${GROQ_API_KEY:-test-key}
+      - PYTHONPATH=/app
+      - WORKERS=2
     depends_on:
-      - redis
+      redis:
+        condition: service_healthy
     networks:
       - healthai-network
+    volumes:
+      - ./data:/app/data:rw
+      - ./logs:/app/logs:rw
+    restart: unless-stopped
     deploy:
       replicas: 2
       resources:
         limits:
           memory: 1G
+          cpus: '1.0'
+        reservations:
+          memory: 512M
           cpus: '0.5'
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
   redis:
-    image: redis:7-alpine
+    image: redis:7.2-alpine
     ports:
       - "6380:6379"
-    command: redis-server --maxmemory 256mb --maxmemory-policy allkeys-lru
+    command: redis-server --maxmemory 512mb --maxmemory-policy allkeys-lru --appendonly yes --save 900 1 --save 300 10 --save 60 10000
     volumes:
       - redis-data:/data
     networks:
       - healthai-network
+    restart: unless-stopped
     deploy:
       resources:
         limits:
+          memory: 512M
+          cpus: '0.3'
+        reservations:
           memory: 256M
-          cpus: '0.2'
+          cpus: '0.1'
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
 
   nginx:
-    image: nginx:alpine
+    image: nginx:1.25-alpine
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./config/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./config/ssl:/etc/nginx/ssl:ro
+      - nginx_logs:/var/log/nginx
     depends_on:
-      - healthai-app
+      healthai-app:
+        condition: service_healthy
     networks:
       - healthai-network
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+          cpus: '0.2'
 
 volumes:
   redis-data:
+  nginx_logs:
 
 networks:
   healthai-network:
