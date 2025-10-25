@@ -5,7 +5,6 @@ import {
   Paper,
   Typography,
   TextField,
-  Button,
   Card,
   CardContent,
   Chip,
@@ -20,11 +19,10 @@ import {
   MedicalServices as MedicalIcon,
   Security as SecurityIcon,
   Speed as SpeedIcon,
-  Warning as WarningIcon,
   CheckCircle as CheckIcon,
   Psychology as AIIcon,
 } from '@mui/icons-material';
-import { useQuery, useMutation } from 'react-query';
+import { useMutation } from 'react-query';
 import axios from 'axios';
 
 interface ChatMessage {
@@ -153,7 +151,7 @@ const HealthAI: React.FC = () => {
         setInputQuery('');
         setIsLoading(false);
       },
-      onError: (error: any) => {
+      onError: (error: Error) => {
         const errorMessage: ChatMessage = {
           id: `error-${Date.now()}`,
           type: 'system',
@@ -281,7 +279,7 @@ const HealthAI: React.FC = () => {
                           <Chip
                             size="small"
                             label={`Security: ${message.metadata.securityCheck}`}
-                            color={getRiskColor(message.metadata.securityCheck) as any}
+                            color={getRiskColor(message.metadata.securityCheck) as 'default' | 'success' | 'warning' | 'error'}
                             variant="outlined"
                           />
                         )}

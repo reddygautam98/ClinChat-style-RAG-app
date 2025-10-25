@@ -30,8 +30,8 @@ describe('HealthAI Component', () => {
   test('renders HealthAI component without crashing', () => {
     renderWithQueryClient(<HealthAI />);
     
-    // Check if the component renders basic elements
-    expect(screen.getByText(/healthai/i)).toBeInTheDocument();
+    // Check if the component renders the main heading
+    expect(screen.getByText('HealthAI Assistant')).toBeInTheDocument();
   });
 
   test('renders chat interface elements', () => {

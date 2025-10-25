@@ -16,6 +16,7 @@ Object.defineProperty(window, 'matchMedia', {
 });
 
 // Mock IntersectionObserver
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 (window as any).IntersectionObserver = class IntersectionObserver {
   disconnect() {
     return null;
@@ -29,3 +30,7 @@ Object.defineProperty(window, 'matchMedia', {
     return null;
   }
 };
+
+// Mock scrollIntoView for JSDOM
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+Element.prototype.scrollIntoView = jest.fn();
