@@ -1,0 +1,250 @@
+# CloudFormation template for API key rotation infrastructure
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'API Key Rotation Infrastructure for HealthAI'
+
+Parameters:
+  Environment:
+    Type: String
+    Default: production
+    AllowedValues: [development, staging, production]
+  
+  NotificationEmail:
+    Type: String
+    Description: Email for key rotation notifications
+
+Resources:
+  # Secrets Manager secrets for API keys
+  GeminiAPIKeySecret:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Name: !Sub 'prod/healthai/gemini-api-key-${Environment}'
+      Description: 'Google Gemini API Key for HealthAI'
+      SecretString: !Sub |
+        {
+          "api_key": "your-initial-gemini-key",
+          "service": "gemini",
+          "created_date": "${AWS::StackName}",
+          "rotation_enabled": true,
+          "key_status": "active"
+        }
+      ReplicaRegions:
+        - Region: us-west-2
+      Tags:
+        - Key: Service
+          Value: HealthAI
+        - Key: KeyType
+          Value: AI-API-Key
+        - Key: Environment
+          Value: !Ref Environment
+
+  GroqAPIKeySecret:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Name: !Sub 'prod/healthai/groq-api-key-${Environment}'
+      Description: 'Groq API Key for HealthAI'
+      SecretString: !Sub |
+        {
+          "api_key": "your-initial-groq-key",
+          "service": "groq", 
+          "created_date": "${AWS::StackName}",
+          "rotation_enabled": true,
+          "key_status": "active"
+        }
+      ReplicaRegions:
+        - Region: us-west-2
+      Tags:
+        - Key: Service
+          Value: HealthAI
+        - Key: KeyType
+          Value: AI-API-Key
+
+  # IAM Role for Key Rotation Lambda
+  KeyRotationLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub 'HealthAI-KeyRotation-Role-${Environment}'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: KeyRotationPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - secretsmanager:GetSecretValue
+                  - secretsmanager:UpdateSecret
+                  - secretsmanager:PutSecretValue
+                Resource:
+                  - !Ref GeminiAPIKeySecret
+                  - !Ref GroqAPIKeySecret
+              - Effect: Allow
+                Action:
+                  - sns:Publish
+                Resource: !Ref KeyRotationTopic
+              - Effect: Allow
+                Action:
+                  - events:PutRule
+                  - events:PutTargets
+                  - events:DeleteRule
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - cloudwatch:PutMetricData
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - lambda:InvokeFunction
+                Resource: !Sub 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:deactivate-*-key'
+
+  # Lambda function for key rotation
+  KeyRotationFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Sub 'healthai-key-rotation-${Environment}'
+      Runtime: python3.11
+      Handler: api_key_rotation.lambda_handler
+      Code:
+        ZipFile: |
+          # Placeholder - deploy actual code via CI/CD
+          import json
+          def lambda_handler(event, context):
+              return {'statusCode': 200, 'body': json.dumps('Key rotation function deployed')}
+      Role: !GetAtt KeyRotationLambdaRole.Arn
+      Timeout: 300
+      Environment:
+        Variables:
+          GEMINI_SECRET_NAME: !Ref GeminiAPIKeySecret
+          GROQ_SECRET_NAME: !Ref GroqAPIKeySecret
+          NOTIFICATION_TOPIC: !Ref KeyRotationTopic
+          ENVIRONMENT: !Ref Environment
+      Tags:
+        - Key: Service
+          Value: HealthAI
+        - Key: Purpose
+          Value: API-Key-Rotation
+
+  # EventBridge rule for scheduled rotation
+  KeyRotationSchedule:
+    Type: AWS::Events::Rule
+    Properties:
+      Name: !Sub 'healthai-key-rotation-schedule-${Environment}'
+      Description: 'Automated API key rotation for HealthAI'
+      ScheduleExpression: 'rate(30 days)'  # Monthly rotation
+      State: ENABLED
+      Targets:
+        - Arn: !GetAtt KeyRotationFunction.Arn
+          Id: 'KeyRotationTarget'
+          Input: !Sub |
+            {
+              "secrets": [
+                "${GeminiAPIKeySecret}",
+                "${GroqAPIKeySecret}"
+              ],
+              "environment": "${Environment}",
+              "triggered_by": "scheduled_rotation"
+            }
+
+  # Permission for EventBridge to invoke Lambda
+  KeyRotationLambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref KeyRotationFunction
+      Action: lambda:InvokeFunction
+      Principal: events.amazonaws.com
+      SourceArn: !GetAtt KeyRotationSchedule.Arn
+
+  # SNS Topic for notifications
+  KeyRotationTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Sub 'healthai-key-rotation-notifications-${Environment}'
+      DisplayName: 'HealthAI API Key Rotation Notifications'
+      KmsMasterKeyId: alias/aws/sns
+
+  # SNS Subscription for email notifications
+  KeyRotationEmailSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Protocol: email
+      TopicArn: !Ref KeyRotationTopic
+      Endpoint: !Ref NotificationEmail
+
+  # CloudWatch Log Group
+  KeyRotationLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub '/aws/lambda/healthai-key-rotation-${Environment}'
+      RetentionInDays: 30
+
+  # CloudWatch Alarms for monitoring
+  KeyRotationFailureAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub 'HealthAI-KeyRotation-Failures-${Environment}'
+      AlarmDescription: 'Alert on API key rotation failures'
+      MetricName: Errors
+      Namespace: AWS/Lambda
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 1
+      Threshold: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref KeyRotationFunction
+      AlarmActions:
+        - !Ref KeyRotationTopic
+
+  # Manual rotation trigger (for emergency rotation)
+  ManualRotationFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Sub 'healthai-manual-key-rotation-${Environment}'
+      Runtime: python3.11
+      Handler: api_key_rotation.lambda_handler
+      Code:
+        ZipFile: |
+          import json
+          def lambda_handler(event, context):
+              return {'statusCode': 200, 'body': json.dumps('Manual rotation triggered')}
+      Role: !GetAtt KeyRotationLambdaRole.Arn
+      Timeout: 300
+      Environment:
+        Variables:
+          GEMINI_SECRET_NAME: !Ref GeminiAPIKeySecret
+          GROQ_SECRET_NAME: !Ref GroqAPIKeySecret
+          NOTIFICATION_TOPIC: !Ref KeyRotationTopic
+          ENVIRONMENT: !Ref Environment
+
+Outputs:
+  GeminiSecretArn:
+    Description: 'ARN of Gemini API key secret'
+    Value: !Ref GeminiAPIKeySecret
+    Export:
+      Name: !Sub '${AWS::StackName}-GeminiSecret'
+
+  GroqSecretArn:
+    Description: 'ARN of Groq API key secret'
+    Value: !Ref GroqAPIKeySecret
+    Export:
+      Name: !Sub '${AWS::StackName}-GroqSecret'
+
+  RotationFunctionArn:
+    Description: 'ARN of key rotation function'
+    Value: !GetAtt KeyRotationFunction.Arn
+
+  NotificationTopicArn:
+    Description: 'ARN of notification topic'
+    Value: !Ref KeyRotationTopic
+
+  ManualRotationCommand:
+    Description: 'AWS CLI command for manual rotation'
+    Value: !Sub 'aws lambda invoke --function-name ${ManualRotationFunction} response.json'
