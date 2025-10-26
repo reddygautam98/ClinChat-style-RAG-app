@@ -174,7 +174,7 @@ const HealthAI: React.FC = () => {
     sendMessage.mutate(inputQuery);
   };
 
-  const getRiskColor = (risk?: string) => {
+  const getRiskColor = (risk?: string): 'default' | 'success' | 'warning' | 'error' => {
     switch (risk) {
       case 'LOW': return 'success';
       case 'MEDIUM': return 'warning';
@@ -182,6 +182,12 @@ const HealthAI: React.FC = () => {
       case 'CRITICAL': return 'error';
       default: return 'default';
     }
+  };
+
+  const getMessageBackgroundColor = (messageType: string) => {
+    if (messageType === 'user') return 'primary.light';
+    if (messageType === 'system') return 'grey.100';
+    return 'white';
   };
 
   return (
@@ -239,8 +245,7 @@ const HealthAI: React.FC = () => {
                 <Card 
                   elevation={1}
                   sx={{
-                    bgcolor: message.type === 'user' ? 'primary.light' : 
-                             message.type === 'system' ? 'grey.100' : 'white',
+                    bgcolor: getMessageBackgroundColor(message.type),
                     color: message.type === 'user' ? 'white' : 'text.primary',
                     ml: message.type === 'user' ? 4 : 0,
                     mr: message.type === 'user' ? 0 : 4
@@ -279,7 +284,7 @@ const HealthAI: React.FC = () => {
                           <Chip
                             size="small"
                             label={`Security: ${message.metadata.securityCheck}`}
-                            color={getRiskColor(message.metadata.securityCheck) as 'default' | 'success' | 'warning' | 'error'}
+                            color={getRiskColor(message.metadata.securityCheck)}
                             variant="outlined"
                           />
                         )}

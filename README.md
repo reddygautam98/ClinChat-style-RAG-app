@@ -15,7 +15,7 @@ An advanced clinical chat application using Retrieval-Augmented Generation (RAG)
 
 ## 🛠 Prerequisites
 
-- Python 3.11+ (3.13.1 recommended)
+- Python 3.12+ (3.12.1 recommended)
 - Docker Desktop (optional)
 - VS Code with Python extensions
 - Git
