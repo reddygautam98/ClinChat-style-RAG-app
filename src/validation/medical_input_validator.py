@@ -5,8 +5,8 @@ HIPAA-compliant validation with medical context awareness
 import re
 import json
 import logging
-from typing import List, Dict, Any, Optional, Tuple
-from pydantic import BaseModel, validator, Field
+from typing import List, Dict, Any, Optional
+from pydantic import BaseModel, field_validator, Field
 from dataclasses import dataclass
 import hashlib
 
@@ -239,8 +239,9 @@ class EnhancedMedicalQuery(BaseModel):
     patient_context: Optional[str] = Field(default=None, max_length=500)
     urgency_level: str = Field(default="routine", pattern="^(routine|urgent|emergency)$")
     
-    @validator('question')
-    def validate_question(cls, v):
+    @field_validator('question')
+    @classmethod
+    def validate_question(cls, v: str) -> str:
         """Validate medical question input"""
         validator = MedicalInputValidator()
         result = validator.validate_medical_query(v)
@@ -250,8 +251,9 @@ class EnhancedMedicalQuery(BaseModel):
         
         return result.sanitized_input
     
-    @validator('patient_context')
-    def validate_patient_context(cls, v):
+    @field_validator('patient_context')
+    @classmethod
+    def validate_patient_context(cls, v: Optional[str]) -> Optional[str]:
         """Validate patient context for PII"""
         if v is None:
             return v
