@@ -8,7 +8,16 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF.svg)](https://github.com/features/actions)
 
+<<<<<<< HEAD
 > **Enterprise-Grade Clinical AI Assistant** leveraging cutting-edge **Retrieval-Augmented Generation (RAG)**, **Multi-LLM Orchestration**, and **Advanced Vector Similarity Search** for precision healthcare knowledge delivery.
+=======
+# Dashboard 
+<img width="2537" height="1240" alt="Screenshot 2025-10-23 224431" src="https://github.com/user-attachments/assets/f3490e95-5a03-4a1b-9cc8-fb3fc83bcdfa" />
+
+<img width="1536" height="1024" alt="ChatGPT Image Oct 27, 2025, 07_43_41 AM" src="https://github.com/user-attachments/assets/a7f1f85d-8efd-408c-8022-f1f1322497b3" />
+
+## 🌟 Features
+>>>>>>> a9d5d55f209801d0a59ae0ae70d83edf0d94253b
 
 ---
 
@@ -1035,6 +1044,7 @@ For support and questions:
 
 ---
 
+<<<<<<< HEAD
 ## 📞 **Support & Community**
 
 ### **🛠️ Technical Support**
@@ -1098,3 +1108,6 @@ Special thanks to all contributors who have helped improve this project through 
 © 2024 HealthAI RAG Platform | MIT License | [Privacy Policy](./docs/privacy.md) | [Terms of Service](./docs/terms.md)
 
 </div>
+=======
+**Built with ❤️ for advancing healthcare through AI**
+>>>>>>> a9d5d55f209801d0a59ae0ae70d83edf0d94253b
