@@ -2,6 +2,11 @@
 
 An advanced clinical chat application using Retrieval-Augmented Generation (RAG) for medical knowledge assistance. Features AI model fusion, comprehensive evaluation framework, A/B testing, and performance monitoring.
 
+# Dashboard 
+<img width="2537" height="1240" alt="Screenshot 2025-10-23 224431" src="https://github.com/user-attachments/assets/f3490e95-5a03-4a1b-9cc8-fb3fc83bcdfa" />
+
+<img width="1536" height="1024" alt="ChatGPT Image Oct 27, 2025, 07_43_41 AM" src="https://github.com/user-attachments/assets/a7f1f85d-8efd-408c-8022-f1f1322497b3" />
+
 ## 🌟 Features
 
 - **Multi-Model AI Fusion**: Combines multiple AI models for enhanced responses
