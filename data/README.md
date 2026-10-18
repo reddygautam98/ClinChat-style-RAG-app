@@ -1,7 +1,7 @@
 # ClinChat RAG Medical Dataset
 
 ## Overview
-This dataset contains **5,000 synthetic medical records** generated for testing and training the ClinChat RAG application. The data includes realistic clinical information while being completely artificial and HIPAA-compliant.
+This dataset contains **5,000 synthetic medical records** generated for testing and training the ClinChat RAG application. The records are described by this project as synthetic. This statement has not been independently audited as a legal or regulatory compliance assessment.
 
 ## Dataset Details
 
@@ -150,8 +150,8 @@ medical_corpus = clinical_texts + diagnosis_texts + symptom_texts
 ### **Privacy Compliant**
 - ✅ Completely synthetic data
 - ✅ No real patient information
-- ✅ HIPAA-compliant
-- ✅ Safe for development/testing
+- ⚠️ Synthetic sample data only; do not infer regulatory certification from this dataset description.
+- ⚠️ Review the dataset and handling practices before use; synthetic data status alone does not certify an application as compliant.
 
 ## 🔧 **Regenerating Data**
 
