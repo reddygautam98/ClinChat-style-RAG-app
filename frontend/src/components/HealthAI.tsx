@@ -202,7 +202,7 @@ const HealthAI: React.FC = () => {
                 HealthAI Assistant
               </Typography>
               <Typography variant="subtitle1" sx={{ opacity: 0.9 }}>
-                HIPAA-compliant medical information with advanced security
+                Experimental medical-information retrieval prototype — not for clinical use
               </Typography>
             </Box>
           </Box>
@@ -211,7 +211,7 @@ const HealthAI: React.FC = () => {
           <Box display="flex" gap={2} mt={2} flexWrap="wrap">
             <Chip
               icon={<SecurityIcon />}
-              label="HIPAA Compliant"
+              label="Prototype · Not for clinical use"
               size="small"
               sx={{ bgcolor: 'rgba(255,255,255,0.2)', color: 'white' }}
             />
@@ -340,8 +340,7 @@ const HealthAI: React.FC = () => {
             {/* Security Notice */}
             <Alert severity="info" sx={{ mt: 2 }}>
               <Typography variant="body2">
-                🔒 Your queries are automatically scanned for PII and security threats. 
-                All interactions are HIPAA-compliant and encrypted.
+                ⚠️ Prototype notice: do not enter real patient or other sensitive information. This application has not been independently assessed for clinical safety, privacy, or regulatory compliance.
               </Typography>
             </Alert>
           </Box>
