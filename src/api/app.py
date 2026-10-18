@@ -284,11 +284,11 @@ async def query(request: Request, q: Query):
             logger.error(f"AI service failed: {result.get('error', 'Unknown error')}")
             raise HTTPException(status_code=503, detail="AI service temporarily unavailable")
         
-        # Enhanced sources with HIPAA compliance
+        # Source labels are illustrative until real retrieval metadata is connected.
         sources = [
-            {"title": "Clinical Knowledge Base", "url": "", "excerpt": "HIPAA-compliant medical knowledge repository"},
-            {"title": "Medical Literature", "url": "", "excerpt": "Evidence-based medical information"},
-            {"title": f"AI Model: {result['model_used']}", "url": "", "excerpt": "AI-generated clinical response with cost tracking"}
+            {"title": "Knowledge source", "url": "", "excerpt": "Illustrative source label; verify against the actual retrieved document."},
+            {"title": "Reference material", "url": "", "excerpt": "No source URL is available in this response."},
+            {"title": f"AI Model: {result['model_used']}", "url": "", "excerpt": "AI-generated response; content and references require independent verification."}
         ]
         
         return Answer(
