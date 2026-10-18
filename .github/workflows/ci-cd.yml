@@ -86,7 +86,8 @@ jobs:
     - name: Install frontend dependencies
       working-directory: ./frontend
       run: |
-        npm ci
+        # This repository has no frontend/package-lock.json, so npm ci cannot run here.
+        npm install --no-audit --no-fund
 
     - name: Run frontend linting
       working-directory: ./frontend
@@ -221,7 +222,9 @@ jobs:
   cleanup:
     runs-on: ubuntu-latest
     needs: build-and-deploy
-    if: always()
+    # Only run AWS image cleanup after a successful deployment. If tests fail or
+    # deployment is skipped, don't start a second AWS job that will fail as well.
+    if: always() && needs.build-and-deploy.result == 'success'
     steps:
     - name: Configure AWS credentials for cleanup
       uses: aws-actions/configure-aws-credentials@v4
