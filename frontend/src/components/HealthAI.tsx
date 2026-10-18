@@ -50,7 +50,7 @@ const HealthAI: React.FC = () => {
     {
       id: '1',
       type: 'system',
-      content: 'Welcome to HealthAI - Your HIPAA-compliant medical information assistant. I can help you with medical questions while maintaining the highest privacy and security standards.',
+      content: 'Welcome to HealthAI, an experimental medical-information retrieval prototype. Responses may be incomplete or incorrect and are not medical advice. Do not enter real patient information or other sensitive data.',
       timestamp: new Date(),
     }
   ]);
